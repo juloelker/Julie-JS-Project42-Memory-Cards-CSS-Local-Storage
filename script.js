@@ -8,7 +8,7 @@ const cardsContainer = document.getElementById('cards-container'),
   answerEl = document.getElementById('answer'),
   addCardBtn = document.getElementById('add-card'),
   clearBtn = document.getElementById('clear'),
-  undoBtn = document.getElementById('undo'),
+  restoreBtn = document.getElementById('restore'),
   addContainer = document.getElementById('add-container');
 
 // Keep track of current card
@@ -81,20 +81,20 @@ function updateCurrentCardNumber() {
 
 // Get cards from local storage
 function getCardsData() {
-  const cards = JSON.parse(localStorage.getItem('cards'));
-  return cards === null ? [] : cards;
+  const cardsLS = JSON.parse(localStorage.getItem('cards'));
+  return cardsLS === null ? [] : cardsLS;
 }
 
 // Add card to local storage
-function setCardsData(cards) {
-  localStorage.setItem('cards', JSON.stringify(cards));
+function setCardsData(cardsLS) {
+  localStorage.setItem('cards', JSON.stringify(cardsLS));
+  sessionStorage.clear();
   window.location.reload();
 }
 
 createCards();
 
 // Event listeners
-
 // Next button
 nextBtn.addEventListener('click', () => {
   cardsEl[currentActiveCard].className = 'card left';
@@ -148,42 +148,43 @@ addCardBtn.addEventListener('click', () => {
     cardsData.push(newCard);
     setCardsData(cardsData);
   }
+  clearBtn.classList.add('show');
 });
 
 // Clear All Cards button, clears the display,
-//moves cards to session storage, displays the Undo button
+//if any cards in local storage, moves them to session storage
 clearBtn.addEventListener('click', () => {
   const cards = localStorage.getItem('cards');
-  localStorage.clear();
 
-  sessionStorage.setItem('cards', cards);
-  // updateCurrentCardNumber();
-  cardsContainer.innerHTML = '';
-  undoBtn.classList.remove('hide');
-  clearBtn.classList.add('hide');
-  currentEl.innerText = '';
+  if (cards) {
+    localStorage.clear();
+
+    sessionStorage.setItem('tempCards', cards);
+    window.location.reload();
+  }
 });
 
-/*Clicking undo restores from session storage
+/*Clicking Restore restores from session storage. If session storage is empty, it does nothing
  */
-undoBtn.addEventListener('click', () => {
-  undoBtn.classList.add('hide');
-  clearBtn.classList.remove('hide');
+restoreBtn.addEventListener('click', () => {
+  const tempCards = sessionStorage.getItem('tempCards');
 
-  localStorage.clear();
-  const cards = sessionStorage.getItem('cards');
-  sessionStorage.clear();
+  if (tempCards) {
+    localStorage.clear();
 
-  localStorage.setItem('cards', cards);
+    sessionStorage.clear();
 
-  //create the card set with 1st card displayed
-  createCards();
+    localStorage.setItem('cards', tempCards);
 
-  //reload the page, resets #/#
-  //bug with the #/# showing the 2nd number doubled
-  //fixed by putting operations in correct order
-  //reload the page AFTER creating cards
-  window.location.reload();
+    //create the card set with 1st card displayed
+    createCards();
+
+    //reload the page, resets #/#
+    //bug with the #/# showing the 2nd number doubled
+    //fixed by putting operations in correct order
+    //reload the page AFTER creating cards
+    window.location.reload();
+  }
 });
 
 //Delete card functionality, future
@@ -192,3 +193,7 @@ undoBtn.addEventListener('click', () => {
  * delete it from local storage (no restore)
  *
  */
+
+/*
+2nd new function, displayRestoreBtn() which checks if anything in session storage and if anything there, display Restore
+*/
