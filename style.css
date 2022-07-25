@@ -50,24 +50,20 @@ h1 button {
   .clear {
     position: absolute;
     opacity: 1;
-    z-index: 10;
+    z-index: 2;
     bottom: 30px;
     left: 30px;
   }
 
-  .hide {
-    opacity: 0; 
-    z-index: -1;
-  }
-
-  .undo {
+  .restore {
     position: absolute;
+    opacity: 1;
+    z-index: 2;
     bottom: 30px;
-    left: 30px;
+    right: 30px;
     color: #ff0000;
     font-weight: bold;
   }
-
 
   .cards {
     perspective: 1000px;
@@ -80,7 +76,7 @@ h1 button {
   .card {
     position: absolute;
     opacity: 0;
-    font-size: 1.5em;
+    font-size: 20px;
     top: 0;
     left: 0;
     height: 100%;
@@ -134,6 +130,8 @@ h1 button {
 
   .inner-card-back {
     transform: rotateX(180deg);
+    font-weight: bold;
+    background: #f3efef;
   }
 
   .inner-card-front::after, .inner-card-back::after {
@@ -142,7 +140,6 @@ h1 button {
     position: absolute;
     top: 10px;
     right: 10px;
-    font-weight: bold;
     font-size: 16px;
     color: #aaa;
   }
@@ -184,7 +181,7 @@ h1 button {
     z-index: 2;
   }
 
-  .add-container h3 {
+  .add-container {
     margin: 10px 0;
   }
 
